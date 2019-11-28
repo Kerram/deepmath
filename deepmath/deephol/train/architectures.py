@@ -8,6 +8,7 @@ import tensorflow as tf
 from deepmath.deephol.train import losses
 from deepmath.deephol.train import utils
 from deepmath.deephol.train import wavenet
+from bert import modeling
 
 FLAGS = tf.flags.FLAGS
 
@@ -100,6 +101,17 @@ def wavenet_encoding(net, params, mode):
         keep_prob=layer_keep_prob)
   return net
 
+def bert_encoding(net, params, mode, type_id):
+  config = modeling.BertConfig(vocab_size=params.vocab_size, hidden_size=params.hidden_size,
+    num_hidden_layers=12, num_attention_heads=12, intermediate_size=3072)
+
+  input_shape = get_shape_list(net, expected_rank=2)
+  batch_size = input_shape[0]
+  seq_length = input_shape[1]
+
+  model = modeling.BertModel(config=config, is_training=(mode == TRAIN), input_ids=net, 
+    token_type_ids=tf.constant(type_id, shape=[batch_size, seq_length], dtype=tf.int32))
+  return model.get_sequence_output()
 
 class EncodingSpec(
     collections.namedtuple(
@@ -143,6 +155,8 @@ def dilated_cnn_goal_encoder(features, labels, mode, params, config):
 
   # goal_ids shape is [batch_size, length of goal]
   tf.add_to_collection('goal_ids', features['goal_ids'])
+
+  """
   goal_embedding = get_vocab_embedding('goal_embedding', params)
   # output shape is [batch_size, goal length, word_embedding_size]
   goal_net = tf.nn.embedding_lookup(goal_embedding, features['goal_ids'])
@@ -150,8 +164,13 @@ def dilated_cnn_goal_encoder(features, labels, mode, params, config):
   with tf.variable_scope('goal', reuse=False):
     # output shape: [batch_size, 1, goal length, hidden_size]
     goal_net = wavenet_encoding(goal_net, params, mode)
+  """
+
+  with tf.variable_scope('goal', reuse=False):
+    goal_net = bert_encoding(features['goal_ids'], params, mode, 1)
+
   # output shape is [batch_size, hidden_size]
-  goal_net = tf.reduce_max(goal_net, [1, 2])
+  goal_net = tf.reduce_max(goal_net, [1])
 
   # The first goal_net in the collection matches the number of unique goals.
   # This will be used by the predictor to compute the embedding of the goals.
@@ -185,6 +204,8 @@ def dilated_cnn_thm_encoder(features, labels, mode, params, config):
   del labels, config  # Unused by this encoder
 
   tf.add_to_collection('thm_ids', features['thm_ids'])
+  
+  """
   # thm_ids shape is [batch_size, length of thm]
   if params.thm_vocab is not None:
     thm_embedding = get_vocab_embedding('thm_embedding', params)
@@ -199,9 +220,13 @@ def dilated_cnn_thm_encoder(features, labels, mode, params, config):
   with tf.variable_scope('thm', reuse=False):
     # output shape: [batch_size, 1, thm length, hidden_size]
     thm_net = wavenet_encoding(thm_net, params, mode)
+  """
+
+  with tf.variable_scoe('thm', reuse=False):
+    thm_net = bert_encoding(features['thm_ids'], params, mode, 0)
 
   # output shape is [batch_size, hidden_size]
-  thm_net = tf.reduce_max(thm_net, [1, 2])
+  thm_net = tf.reduce_max(thm_net, [1])
   tf.add_to_collection('thm_net', thm_net)
 
   return thm_net
