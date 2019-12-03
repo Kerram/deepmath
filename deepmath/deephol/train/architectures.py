@@ -101,17 +101,36 @@ def wavenet_encoding(net, params, mode):
         keep_prob=layer_keep_prob)
   return net
 
+
 def bert_encoding(net, params, mode, type_id):
   config = modeling.BertConfig(vocab_size=params.vocab_size, hidden_size=params.hidden_size,
-    num_hidden_layers=12, num_attention_heads=12, intermediate_size=3072)
+                               num_hidden_layers=12, num_attention_heads=12, intermediate_size=3072)
 
   input_shape = get_shape_list(net, expected_rank=2)
   batch_size = input_shape[0]
   seq_length = input_shape[1]
 
-  model = modeling.BertModel(config=config, is_training=(mode == TRAIN), input_ids=net, 
-    token_type_ids=tf.constant(type_id, shape=[batch_size, seq_length], dtype=tf.int32))
+  model = modeling.BertModel(config=config, is_training=(mode == TRAIN), input_ids=net,
+                             token_type_ids=tf.constant(type_id, shape=[batch_size, seq_length], dtype=tf.int32))
+  tvars = tf.trainable_variables()
+  use_tpu = False
+  init_checkpoint = params.bert_checkpoint
+
+  if init_checkpoint:
+    (assignment_map, initialized_variable_names
+     ) = modeling.get_assignment_map_from_checkpoint(tvars, init_checkpoint)
+    if use_tpu:
+
+      def tpu_scaffold():
+        tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
+        return tf.train.Scaffold()
+
+      scaffold_fn = tpu_scaffold
+    else:
+      tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
+
   return model.get_sequence_output()
+
 
 class EncodingSpec(
     collections.namedtuple(

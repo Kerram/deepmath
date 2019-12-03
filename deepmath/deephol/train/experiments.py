@@ -232,6 +232,9 @@ def main(argv):
       model_head=None,
       # Condition parameter selection on tactic (PARAMETERS_CONDITIONED_ON_TAC).
       parameters_conditioned_on_tac=False,
+      bert_checkpoint=tf.train.latest_checkpoint(
+          "{}/{}".format("gs://{}".format('zpp-bucket-1920'), 'bert_model')
+      )
   )
   hparams.parse(FLAGS.hparams)
   if not (hparams.ratio_max_hard_negative_examples <=
