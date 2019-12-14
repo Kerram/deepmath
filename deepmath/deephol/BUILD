@@ -9,7 +9,6 @@ package(
 )
 
 load(
-    "@org_tensorflow//tensorflow/core:platform/default/build_config.bzl",
     "tf_proto_library",
 )
 
@@ -55,7 +54,6 @@ py_test(
         "//third_party/py/numpy",
         "@absl_py//absl/flags",
         "@absl_py//absl/testing:parameterized",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
 
@@ -66,8 +64,6 @@ py_library(
         ":predictions",
         ":process_sexp",
         "//third_party/py/numpy",
-        "@org_tensorflow//tensorflow:tensorflow_py",
-        "@org_tensorflow//tensorflow/core:protos_all_py",
     ],
 )
 
@@ -100,7 +96,6 @@ py_test(
         ":predictions",
         "//third_party/py/numpy",
         "@absl_py//absl/testing:parameterized",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
 
@@ -111,7 +106,6 @@ py_library(
         ":predictions",
         "//third_party/py/numpy",
         "@absl_py//absl/flags",
-        "@org_tensorflow//tensorflow:tensorflow_py",
         "@six_archive//:six",
     ],
 )
@@ -133,7 +127,6 @@ py_test(
     deps = [
         ":theorem_fingerprint",
         "//deepmath/proof_assistant:proof_assistant_proto_py",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
 
@@ -151,7 +144,6 @@ py_library(
         "//deepmath/proof_assistant:proof_assistant_proto_py",
         "//third_party/py/numpy",
         "//third_party/py/scipy",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
 
@@ -174,7 +166,6 @@ py_test(
         "//deepmath/proof_assistant:proof_assistant_proto_py",
         "@absl_py//absl/flags",
         "@absl_py//absl/testing:parameterized",
-        "@org_tensorflow//tensorflow:tensorflow_py",
         "@protobuf_archive//:protobuf_python",
     ],
 )
@@ -189,7 +180,6 @@ py_library(
         "//deepmath/deephol/utilities:normalization_lib",
         "//deepmath/proof_assistant:proof_assistant_proto_py",
         "//third_party/py/numpy",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
 
@@ -210,7 +200,6 @@ py_test(
         "//third_party/py/numpy",
         "@absl_py//absl/flags",
         "@absl_py//absl/testing:parameterized",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
 
@@ -221,7 +210,6 @@ py_library(
         ":deephol_proto_py",
         "//deepmath/deephol/public:recordio_util",
         "//deepmath/proof_assistant:proof_assistant_proto_py",
-        "@org_tensorflow//tensorflow:tensorflow_py",
         "@protobuf_archive//:protobuf_python",
     ],
 )
@@ -232,7 +220,6 @@ py_test(
     deps = [
         ":deephol_proto_py",
         ":io_util",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
 
@@ -243,7 +230,6 @@ py_binary(
     deps = [
         ":prover_flags",
         ":prover_runner",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
 
@@ -256,7 +242,6 @@ py_library(
         "//deepmath/deephol/public:proof_assistant",
         "//deepmath/proof_assistant:proof_assistant_proto_py",
         "//deepmath/public:error",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
 
@@ -276,7 +261,6 @@ py_library(
         "//deepmath/deephol/public:proof_assistant",
         "//deepmath/proof_assistant:proof_assistant_proto_py",
         "//deepmath/public:error",
-        "@org_tensorflow//tensorflow:tensorflow_py",
         "@protobuf_archive//:protobuf_python",
     ],
 )
@@ -289,7 +273,6 @@ py_library(
         ":io_util",
         ":prover_util",
         "//deepmath/proof_assistant:proof_assistant_proto_py",
-        "@org_tensorflow//tensorflow:tensorflow_py",
         "@protobuf_archive//:protobuf_python",
     ],
 )
@@ -304,7 +287,6 @@ py_library(
         "//deepmath/deephol/utilities:stats",
         "//deepmath/proof_assistant:proof_assistant_proto_py",
         "//deepmath/public:build_data",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
 
@@ -318,7 +300,6 @@ py_library(
         ":proof_search_tree",
         ":theorem_fingerprint",
         "//deepmath/proof_assistant:proof_assistant_proto_py",
-        "@org_tensorflow//tensorflow:tensorflow_py",
         "@protobuf_archive//:protobuf_python",
     ],
 )
@@ -332,7 +313,6 @@ py_test(
         ":proof_search_tree",
         ":prover_util",
         "//deepmath/proof_assistant:proof_assistant_proto_py",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
 
@@ -345,6 +325,5 @@ py_library(
         "//deepmath/deephol/public:proof_assistant",
         "//deepmath/proof_assistant:proof_assistant_proto_py",
         "//deepmath/public:error",
-        "@org_tensorflow//tensorflow:tensorflow_py",
     ],
 )
